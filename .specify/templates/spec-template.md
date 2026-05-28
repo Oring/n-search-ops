@@ -5,6 +5,9 @@
 **Status**: Draft  
 **Input**: User description: "$ARGUMENTS"
 
+> Output rule: Write the completed specification in Korean unless the user
+> explicitly requests another language.
+
 ## User Scenarios & Testing *(mandatory)*
 
 <!--
@@ -99,6 +102,40 @@
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
+
+## Audit & Data Handling *(mandatory)*
+
+<!--
+  ACTION REQUIRED: Describe the operational trail created or changed by this
+  feature. If the feature does not touch persistent data or operator-visible
+  history, state that explicitly.
+-->
+
+- **Captured Events**: [List the user/admin actions that MUST be logged or state "None"]
+- **Data Changes**: [Describe created/updated/deleted records and key fields]
+- **Retention / Reconciliation**: [State retention expectations, reconciliation needs, or "N/A"]
+- **Export / Reporting Impact**: [Describe operator-visible analytics or exports affected, or "None"]
+
+## Security & Access *(mandatory)*
+
+<!--
+  ACTION REQUIRED: Make privacy and authorization boundaries explicit.
+-->
+
+- **Actors / Roles**: [List user or operator roles affected by this feature]
+- **Access Rules**: [Who can view, modify, export, or administer the feature]
+- **Sensitive Data**: [PII, secrets, credentials, or "None"]
+- **Abuse / Misuse Risks**: [Key misuse cases and required mitigations]
+
+## Operational Readiness *(mandatory)*
+
+<!--
+  ACTION REQUIRED: State how the feature will be verified and safely operated.
+-->
+
+- **Verification Plan**: [Automated tests, manual proof steps, or both]
+- **Observability**: [Logs, metrics, alerts, dashboards, or "None"]
+- **Rollback / Recovery**: [How to back out or recover from a bad release, or "N/A"]
 
 ## Success Criteria *(mandatory)*
 

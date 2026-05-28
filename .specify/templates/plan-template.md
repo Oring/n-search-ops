@@ -3,6 +3,9 @@
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
+> Output rule: Write the completed plan in Korean unless the user explicitly
+> requests another language.
+
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
 
 ## Summary
@@ -31,7 +34,17 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Story slices are independently testable and mapped to explicit acceptance
+  scenarios.
+- Verification evidence is defined for each story; deterministic or
+  business-critical behavior has automated coverage, or the plan explains why
+  manual proof is the only practical option.
+- Audit impacts are identified for assignment changes, tester actions, admin
+  mutations, and exported data.
+- Privacy, access control, and secret-handling implications are documented for
+  all affected roles and data flows.
+- Stateful changes, migrations, or new infrastructure include rollback or
+  recovery steps; added complexity is justified below when needed.
 
 ## Project Structure
 
