@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: naver-search-ops
+    runtime: python
+    buildCommand: pip install -e .
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: TIMEZONE
+        value: Asia/Seoul
+      - key: MONTHLY_LIMIT_DEFAULT
+        value: "2"

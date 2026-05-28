@@ -1,0 +1,59 @@
+{% extends "admin/layout.html" %}
+{% block admin_content %}
+  <section class="split-grid">
+    <article class="panel">
+      <h3>관리자 계정 추가</h3>
+      <form method="post" action="/admin/accounts" class="stack">
+        <label>
+          <span>아이디</span>
+          <input type="text" name="username" required />
+        </label>
+        <label>
+          <span>비밀번호</span>
+          <input type="password" name="password" required />
+        </label>
+        <button type="submit">생성</button>
+      </form>
+    </article>
+
+    <article class="panel">
+      <h3>내 비밀번호 변경</h3>
+      <form method="post" action="/admin/password" class="stack">
+        <label>
+          <span>새 비밀번호</span>
+          <input type="password" name="new_password" required />
+        </label>
+        <button type="submit">변경</button>
+      </form>
+    </article>
+  </section>
+
+  <section class="panel">
+    <h3>관리자 목록</h3>
+    <table>
+      <thead>
+        <tr><th>아이디</th><th>상태</th><th>최근 로그인</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for account in accounts %}
+          <tr>
+            <td>{{ account.username }}</td>
+            <td>{{ "활성" if account.is_active else "비활성" }}</td>
+            <td>{{ account.last_login_at|seoul_datetime if account.last_login_at else "-" }}</td>
+            <td>
+              {% if current_admin.id != account.id %}
+                <form method="post" action="/admin/accounts/{{ account.id }}/toggle">
+                  <button type="submit" class="secondary">{{ "비활성화" if account.is_active else "재활성화" }}</button>
+                </form>
+              {% else %}
+                본인
+              {% endif %}
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="4">관리자 계정이 없습니다.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block body %}
+  <div class="shell">
+    <aside class="sidebar">
+      <h1>네이버 검색 운영</h1>
+      {% if current_admin %}
+        <p class="muted">{{ current_admin.username }} 로그인 중</p>
+        <nav>
+          <a href="/admin">대시보드</a>
+          <a href="/admin/testers">테스터</a>
+          <a href="/admin/groups">그룹</a>
+          <a href="/admin/keywords">키워드</a>
+          <a href="/admin/assignments">주차 할당</a>
+          <a href="/admin/logs">상세 로그</a>
+          <a href="/admin/accounts">관리자 계정</a>
+        </nav>
+        <form method="post" action="/admin/logout" class="logout-form">
+          <button type="submit" class="secondary">로그아웃</button>
+        </form>
+      {% endif %}
+    </aside>
+    <main class="content">
+      {% if flash %}
+        <div class="flash flash-{{ flash.kind }}" x-data="{ open: true }" x-show="open">
+          <span>{{ flash.message }}</span>
+          <button type="button" @click="open = false">닫기</button>
+        </div>
+      {% endif %}
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">BonsStamp MVP</p>
+          <h2>{{ title }}</h2>
+        </div>
+      </header>
+      {% block admin_content %}{% endblock %}
+    </main>
+  </div>
+{% endblock %}

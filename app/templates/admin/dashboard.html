@@ -1,0 +1,95 @@
+{% extends "admin/layout.html" %}
+{% block admin_content %}
+  <section class="panel">
+    <form method="get" action="/admin" class="filters">
+      <label>
+        <span>시작일</span>
+        <input type="date" name="date_from" value="{{ filters.date_from.isoformat() }}" />
+      </label>
+      <label>
+        <span>종료일</span>
+        <input type="date" name="date_to" value="{{ filters.date_to.isoformat() }}" />
+      </label>
+      <button type="submit">조회</button>
+    </form>
+  </section>
+
+  <section class="stats-grid">
+    <article class="stat-card">
+      <h3>원시 시도 수</h3>
+      <strong>{{ stats.totals.attempts }}</strong>
+    </article>
+    <article class="stat-card">
+      <h3>고유 참여자 수</h3>
+      <strong>{{ stats.totals.unique_testers }}</strong>
+    </article>
+  </section>
+
+  <section class="panel">
+    <h3>일자별 현황</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>일자</th>
+          <th>원시 시도 수</th>
+          <th>고유 참여자 수</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in stats.by_day %}
+          <tr>
+            <td>{{ row.date }}</td>
+            <td>{{ row.attempts }}</td>
+            <td>{{ row.unique_testers }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="3">조회 결과가 없습니다.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="split-grid">
+    <article class="panel">
+      <h3>키워드별 누적</h3>
+      <table>
+        <thead>
+          <tr><th>키워드</th><th>원시 시도 수</th><th>고유 참여자 수</th></tr>
+        </thead>
+        <tbody>
+          {% for row in stats.by_keyword %}
+            <tr>
+              <td>{{ row.keyword }}</td>
+              <td>{{ row.attempts }}</td>
+              <td>{{ row.unique_testers }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="3">데이터가 없습니다.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+
+    <article class="panel">
+      <h3>테스터별 참여도</h3>
+      <table>
+        <thead>
+          <tr><th>회원번호</th><th>이름</th><th>그룹</th><th>시도 수</th><th>최근 시각</th></tr>
+        </thead>
+        <tbody>
+          {% for row in stats.by_tester %}
+            <tr>
+              <td>{{ row.member_no }}</td>
+              <td>{{ row.name }}</td>
+              <td>{{ row.group_name }}</td>
+              <td>{{ row.attempts }}</td>
+              <td>{{ row.last_attempt_at|seoul_datetime }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5">데이터가 없습니다.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </section>
+{% endblock %}

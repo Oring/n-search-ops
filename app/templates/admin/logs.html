@@ -1,0 +1,71 @@
+{% extends "admin/layout.html" %}
+{% block admin_content %}
+  <section class="panel">
+    <form method="get" action="/admin/logs" class="filters">
+      <label>
+        <span>시작일</span>
+        <input type="date" name="date_from" value="{{ filters.date_from.isoformat() if filters.date_from else '' }}" />
+      </label>
+      <label>
+        <span>종료일</span>
+        <input type="date" name="date_to" value="{{ filters.date_to.isoformat() if filters.date_to else '' }}" />
+      </label>
+      <label>
+        <span>그룹</span>
+        <select name="group_id">
+          <option value="">전체</option>
+          {% for group in groups %}
+            <option value="{{ group.id }}" {% if filters.group_id == group.id %}selected{% endif %}>{{ group.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        <span>키워드</span>
+        <select name="keyword_id">
+          <option value="">전체</option>
+          {% for keyword in keywords %}
+            <option value="{{ keyword.id }}" {% if filters.keyword_id == keyword.id %}selected{% endif %}>{{ keyword.phrase }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        <span>테스터</span>
+        <select name="tester_id">
+          <option value="">전체</option>
+          {% for tester in testers %}
+            <option value="{{ tester.id }}" {% if filters.tester_id == tester.id %}selected{% endif %}>{{ tester.name }} ({{ tester.member_no }})</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit">조회</button>
+      <a
+        class="button-link"
+        href="/admin/logs/csv?date_from={{ filters.date_from.isoformat() if filters.date_from else '' }}&date_to={{ filters.date_to.isoformat() if filters.date_to else '' }}&group_id={{ filters.group_id or '' }}&keyword_id={{ filters.keyword_id or '' }}&tester_id={{ filters.tester_id or '' }}"
+      >
+        CSV 다운로드
+      </a>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h3>상세 로그</h3>
+    <table>
+      <thead>
+        <tr><th>시각</th><th>회원번호</th><th>이름</th><th>그룹</th><th>키워드</th></tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+          <tr>
+            <td>{{ log.attempted_at|seoul_datetime }}</td>
+            <td>{{ log.member_no_snapshot }}</td>
+            <td>{{ log.tester_name_snapshot }}</td>
+            <td>{{ log.group_name_snapshot or "-" }}</td>
+            <td>{{ log.keyword_snapshot }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5">조건에 맞는 로그가 없습니다.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

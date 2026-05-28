@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+  <section class="login-shell">
+    <div class="login-card">
+      {% if flash %}
+        <div class="flash flash-{{ flash.kind }}">{{ flash.message }}</div>
+      {% endif %}
+      <p class="eyebrow">관리자 전용</p>
+      <h1>네이버 검색 운영 로그인</h1>
+      <form method="post" action="/admin/login" class="stack">
+        <label>
+          <span>아이디</span>
+          <input type="text" name="username" required />
+        </label>
+        <label>
+          <span>비밀번호</span>
+          <input type="password" name="password" required />
+        </label>
+        <button type="submit">로그인</button>
+      </form>
+      <p class="muted">초기 데모 계정은 `admin / admin1234` 입니다.</p>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "admin/layout.html" %}
+{% block admin_content %}
+  <section class="split-grid">
+    <article class="panel">
+      <h3>{{ "키워드 수정" if editing else "키워드 생성" }}</h3>
+      <form method="post" action="/admin/keywords" class="stack">
+        {% if editing %}<input type="hidden" name="keyword_id" value="{{ editing.id }}" />{% endif %}
+        <label>
+          <span>키워드</span>
+          <input type="text" name="phrase" value="{{ editing.phrase if editing else '' }}" required />
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" name="is_active" {% if editing is none or editing.is_active %}checked{% endif %} />
+          <span>활성</span>
+        </label>
+        <button type="submit">저장</button>
+      </form>
+    </article>
+
+    <article class="panel">
+      <h3>키워드 목록</h3>
+      <table>
+        <thead>
+          <tr><th>키워드</th><th>상태</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for keyword in keywords %}
+            <tr>
+              <td>{{ keyword.phrase }}</td>
+              <td>{{ "활성" if keyword.is_active else "비활성" }}</td>
+              <td><a href="/admin/keywords?edit={{ keyword.id }}">수정</a></td>
+            </tr>
+          {% else %}
+            <tr><td colspan="3">키워드가 없습니다.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </section>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "admin/layout.html" %}
+{% block admin_content %}
+  <section class="split-grid">
+    <article class="panel">
+      <h3>주차별 키워드 할당</h3>
+      <form method="post" action="/admin/assignments" class="stack">
+        <label>
+          <span>주차 시작일</span>
+          <input type="date" name="week_start" value="{{ selected_week.isoformat() }}" required />
+        </label>
+        <label>
+          <span>그룹</span>
+          <select name="group_id" required>
+            {% for group in groups %}
+              <option value="{{ group.id }}">{{ group.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>
+          <span>키워드 다중 선택</span>
+          <select name="keyword_ids" multiple size="8">
+            {% for keyword in keywords %}
+              <option value="{{ keyword.id }}">{{ keyword.phrase }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <button type="submit">할당 저장</button>
+      </form>
+    </article>
+
+    <article class="panel">
+      <h3>월간 제한</h3>
+      <form method="post" action="/admin/assignments/settings" class="inline-form">
+        <input type="number" min="1" name="monthly_limit" value="{{ monthly_limit }}" required />
+        <button type="submit">저장</button>
+      </form>
+      <hr />
+      <h3>{{ selected_week }} 할당 현황</h3>
+      <table>
+        <thead>
+          <tr><th>그룹</th><th>키워드</th></tr>
+        </thead>
+        <tbody>
+          {% for item in assignments %}
+            <tr>
+              <td>{{ item.group.name }}</td>
+              <td>{{ item.keyword.phrase }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="2">할당이 없습니다.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </section>
+{% endblock %}

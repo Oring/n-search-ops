@@ -1,0 +1,150 @@
+openapi: 3.1.0
+info:
+  title: Naver Search Ops API
+  version: 0.1.0
+  description: |
+    본스탬프 앱용 검색 대상 조회/기록 API 계약. 외부 응답은 성공 여부만 단순하게
+    노출하고, 상세 실패 사유는 내부 로그에서만 추적한다.
+servers:
+  - url: https://example.invalid
+paths:
+  /health:
+    get:
+      summary: 헬스체크
+      operationId: getHealth
+      responses:
+        "200":
+          description: 서비스 및 데이터베이스 연결 상태
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+  /api/v1/search-target:
+    get:
+      summary: 오늘의 검색 대상 조회
+      operationId: getSearchTarget
+      parameters:
+        - in: header
+          name: X-API-Key
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: member_no
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 성공 또는 업무상 실패
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchTargetResponse"
+        "401":
+          description: API Key 누락 또는 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailureResponse"
+        "403":
+          description: API Key 권한 거부
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailureResponse"
+  /api/v1/search-attempts:
+    post:
+      summary: 검색 시도 기록
+      operationId: createSearchAttempt
+      parameters:
+        - in: header
+          name: X-API-Key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchAttemptRequest"
+      responses:
+        "200":
+          description: 성공 또는 업무상 실패
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicResponse"
+        "401":
+          description: API Key 누락 또는 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailureResponse"
+        "403":
+          description: API Key 권한 거부
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailureResponse"
+components:
+  schemas:
+    BasicResponse:
+      type: object
+      required: [ok]
+      properties:
+        ok:
+          type: boolean
+    FailureResponse:
+      allOf:
+        - $ref: "#/components/schemas/BasicResponse"
+      example:
+        ok: false
+    SearchTargetResponse:
+      oneOf:
+        - type: object
+          required: [ok, keyword, keyword_id]
+          properties:
+            ok:
+              type: boolean
+              const: true
+            keyword:
+              type: string
+            keyword_id:
+              type: string
+              format: uuid
+        - type: object
+          required: [ok]
+          properties:
+            ok:
+              type: boolean
+              const: false
+      examples:
+        success:
+          value:
+            ok: true
+            keyword: "본스탬프 후기"
+            keyword_id: "11111111-1111-1111-1111-111111111111"
+        business_failure:
+          value:
+            ok: false
+    SearchAttemptRequest:
+      type: object
+      required: [member_no, keyword_id]
+      properties:
+        member_no:
+          type: string
+        keyword_id:
+          type: string
+          format: uuid
+    HealthResponse:
+      type: object
+      required: [ok, database, timezone]
+      properties:
+        ok:
+          type: boolean
+        database:
+          type: string
+        timezone:
+          type: string

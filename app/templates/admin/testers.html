@@ -1,0 +1,59 @@
+{% extends "admin/layout.html" %}
+{% block admin_content %}
+  <section class="split-grid">
+    <article class="panel">
+      <h3>{{ "테스터 수정" if editing else "테스터 등록" }}</h3>
+      <form method="post" action="/admin/testers" class="stack">
+        {% if editing %}<input type="hidden" name="tester_id" value="{{ editing.id }}" />{% endif %}
+        <label>
+          <span>회원번호</span>
+          <input type="text" name="member_no" value="{{ editing.member_no if editing else '' }}" required />
+        </label>
+        <label>
+          <span>이름</span>
+          <input type="text" name="name" value="{{ editing.name if editing else '' }}" required />
+        </label>
+        <label>
+          <span>휴대폰 뒷자리</span>
+          <input type="text" name="phone_last4" maxlength="4" value="{{ editing.phone_last4 if editing and editing.phone_last4 else '' }}" />
+        </label>
+        <label>
+          <span>그룹</span>
+          <select name="group_id">
+            <option value="">미지정</option>
+            {% for group in groups %}
+              <option value="{{ group.id }}" {% if editing and editing.group_id == group.id %}selected{% endif %}>{{ group.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" name="is_active" {% if editing is none or editing.is_active %}checked{% endif %} />
+          <span>활성</span>
+        </label>
+        <button type="submit">저장</button>
+      </form>
+    </article>
+
+    <article class="panel">
+      <h3>등록된 테스터</h3>
+      <table>
+        <thead>
+          <tr><th>회원번호</th><th>이름</th><th>그룹</th><th>상태</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for tester in testers %}
+            <tr>
+              <td>{{ tester.member_no }}</td>
+              <td>{{ tester.name }}</td>
+              <td>{{ tester.group.name if tester.group else "-" }}</td>
+              <td>{{ "활성" if tester.is_active else "비활성" }}</td>
+              <td><a href="/admin/testers?edit={{ tester.id }}">수정</a></td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5">테스터가 없습니다.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </section>
+{% endblock %}

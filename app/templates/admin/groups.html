@@ -1,0 +1,40 @@
+{% extends "admin/layout.html" %}
+{% block admin_content %}
+  <section class="split-grid">
+    <article class="panel">
+      <h3>{{ "그룹 수정" if editing else "그룹 생성" }}</h3>
+      <form method="post" action="/admin/groups" class="stack">
+        {% if editing %}<input type="hidden" name="group_id" value="{{ editing.id }}" />{% endif %}
+        <label>
+          <span>그룹명</span>
+          <input type="text" name="name" value="{{ editing.name if editing else '' }}" required />
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" name="is_active" {% if editing is none or editing.is_active %}checked{% endif %} />
+          <span>활성</span>
+        </label>
+        <button type="submit">저장</button>
+      </form>
+    </article>
+
+    <article class="panel">
+      <h3>그룹 목록</h3>
+      <table>
+        <thead>
+          <tr><th>그룹명</th><th>상태</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for group in groups %}
+            <tr>
+              <td>{{ group.name }}</td>
+              <td>{{ "활성" if group.is_active else "비활성" }}</td>
+              <td><a href="/admin/groups?edit={{ group.id }}">수정</a></td>
+            </tr>
+          {% else %}
+            <tr><td colspan="3">그룹이 없습니다.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </section>
+{% endblock %}
