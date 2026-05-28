@@ -16,14 +16,18 @@
             {% endfor %}
           </select>
         </label>
-        <label>
-          <span>키워드 다중 선택</span>
-          <select name="keyword_ids" multiple size="8">
+        <fieldset class="keyword-fieldset">
+          <legend>키워드 다중 선택</legend>
+          <p class="hint">체크박스로 여러 키워드를 바로 선택할 수 있습니다.</p>
+          <div class="checkbox-list">
             {% for keyword in keywords %}
-              <option value="{{ keyword.id }}">{{ keyword.phrase }}</option>
+              <label class="checkbox-item">
+                <input type="checkbox" name="keyword_ids" value="{{ keyword.id }}" />
+                <span>{{ keyword.phrase }}</span>
+              </label>
             {% endfor %}
-          </select>
-        </label>
+          </div>
+        </fieldset>
         <button type="submit">할당 저장</button>
       </form>
     </article>

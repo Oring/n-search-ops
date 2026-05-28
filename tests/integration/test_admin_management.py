@@ -31,7 +31,8 @@ def test_admin_login_reactivate_tester_and_overwrite_assignment(client, db_sessi
 
     group = db_session.scalar(select(Group).where(Group.name == "A"))
     keyword = Keyword(phrase="본스탬프 이벤트", is_active=True)
-    db_session.add(keyword)
+    keyword_2 = Keyword(phrase="본스탬프 체험단", is_active=True)
+    db_session.add_all([keyword, keyword_2])
     db_session.commit()
 
     response = client.post(
@@ -39,7 +40,7 @@ def test_admin_login_reactivate_tester_and_overwrite_assignment(client, db_sessi
         data={
             "group_id": group.id,
             "week_start": week_start_for().isoformat(),
-            "keyword_ids": [keyword.id],
+            "keyword_ids": [keyword.id, keyword_2.id],
         },
         follow_redirects=False,
     )
@@ -53,8 +54,8 @@ def test_admin_login_reactivate_tester_and_overwrite_assignment(client, db_sessi
             )
         )
     )
-    assert len(assignments) == 1
-    assert assignments[0].keyword_id == keyword.id
+    assert len(assignments) == 2
+    assert {assignment.keyword_id for assignment in assignments} == {keyword.id, keyword_2.id}
 
 
 def test_admin_can_change_own_password(client):
