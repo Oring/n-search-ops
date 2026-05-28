@@ -3,11 +3,20 @@
   <section class="split-grid">
     <article class="panel">
       <h3>주차별 키워드 할당</h3>
-      <form method="post" action="/admin/assignments" class="stack">
+      <form method="get" action="/admin/assignments" class="stack">
         <label>
           <span>주차 시작일</span>
-          <input type="date" name="week_start" value="{{ selected_week.isoformat() }}" required />
+          <input
+            type="date"
+            name="week_start"
+            value="{{ selected_week.isoformat() }}"
+            onchange="this.form.submit()"
+            required
+          />
         </label>
+      </form>
+      <form method="post" action="/admin/assignments" class="stack">
+        <input type="hidden" name="week_start" value="{{ selected_week.isoformat() }}" />
         <label>
           <span>그룹</span>
           <select name="group_id" required>

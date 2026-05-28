@@ -1,6 +1,8 @@
+from datetime import date
+
 from sqlalchemy import select
 
-from app.core.time import week_start_for
+from app.core.time import normalize_week_start, week_start_for
 from app.db.models import Group, GroupWeekKeywordAssignment, Keyword, Tester as TesterModel
 from tests.helpers import login_as_admin
 
@@ -70,3 +72,30 @@ def test_admin_can_change_own_password(client):
         follow_redirects=False,
     )
     assert response.status_code == 303
+
+
+def test_assignments_page_updates_status_by_selected_week(client, db_session):
+    login_as_admin(client)
+
+    selected_week = normalize_week_start(date(2026, 6, 8))
+    group = db_session.scalar(select(Group).where(Group.name == "A"))
+    keyword = Keyword(phrase="본스탬프 주차테스트", is_active=True)
+    db_session.add(keyword)
+    db_session.commit()
+
+    response = client.post(
+        "/admin/assignments",
+        data={
+            "group_id": group.id,
+            "week_start": selected_week.isoformat(),
+            "keyword_ids": [keyword.id],
+        },
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+
+    response = client.get(f"/admin/assignments?week_start={selected_week.isoformat()}")
+    assert response.status_code == 200
+    assert "BonsStamp MVP" not in response.text
+    assert selected_week.isoformat() in response.text
+    assert "본스탬프 주차테스트" in response.text
